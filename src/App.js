@@ -1,26 +1,45 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { Component } from 'react';
+import Quote from './components/Quote';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+class App extends Component {
+  state = {
+    quoteData: [],
+  };
 
+    loadData = async () => {
+      const response = await fetch('https://api.chucknorris.io/jokes/random');
+      const data = await response.json();
+      return data;
+    }
+
+      handleClick = async () => {
+        const quoteData = await this.loadData();
+    
+          this.setState({
+            quoteData: quoteData,
+          });
+      };
+  
+  async componentDidMount() {
+    const quoteData = await this.loadData();
+    
+    this.setState({
+      quoteData: quoteData,
+    });
+  }
+
+  render() {
+    const { quoteData } = this.state;
+    return (
+      <div className="App">
+        <header className="App-header">
+          <h1>Chuck Quote</h1>
+        </header>
+          <Quote quoteData={quoteData}/>
+        <button onClick={this.handleClick}>More Quotes</button>
+      </div>
+    );
+  }
+}
 export default App;
